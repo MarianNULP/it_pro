@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Інфраструктура PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm z-3 position-relative">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-server me-2 text-primary"></i>IT Infra
+                PRO</a>
+
+            <div class="d-flex align-items-center ms-4 bg-secondary bg-opacity-25 px-3 py-1 rounded">
+                <label class="form-label small fw-bold text-light mb-0 me-2 text-nowrap"><i
+                        class="fa-solid fa-layer-group me-1"></i>Локація:</label>
+                <select class="form-select form-select-sm fw-bold border-0 shadow-none bg-transparent text-white"
+                    id="locationSelect" onchange="changeLocation()" style="min-width: 150px; cursor: pointer;"></select>
+            </div>
+            
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.html"><i
+                                class="fa-solid fa-map-location-dot me-1"></i> Топологія</a></li>
+                    <li class="nav-item"><a class="nav-link" href="devices.html"><i
+                                class="fa-solid fa-desktop me-1"></i> Обладнання</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i
+                                class="fa-solid fa-ticket-simple me-1"></i> Система Тікетів</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-0 overflow-hidden">
+        <div class="row g-0">
+
+            <div class="col-md-2 border-end bg-white d-flex flex-column shadow-sm z-2"
+                style="height: calc(100vh - 62px);">
+                <div class="flex-grow-1 overflow-y-auto">
+                    <div class="accordion sidebar-accordion" id="sidebarAccordion">
+
+                        <div class="accordion-item border-0 border-bottom">
+                            <h2 class="accordion-header"><button class="accordion-button px-3 py-3" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#panelWarehouse"><i
+                                        class="fa-solid fa-boxes-stacked me-2 text-primary"></i>Склад</button></h2>
+                            <div id="panelWarehouse" class="accordion-collapse collapse show"
+                                data-bs-parent="#sidebarAccordion">
+                                <div class="accordion-body px-2 py-2">
+                                    <input type="text" id="invSearch"
+                                        class="form-control form-control-sm mb-2 shadow-none" placeholder="Пошук..."
+                                        onkeyup="renderInventory()">
+                                    <select class="form-select form-select-sm mb-3 shadow-none" id="invFilter"
+                                        onchange="renderInventory()">
+                                        <option value="unplaced">🔵 Не розміщені</option>
+                                        <option value="placed">🟢 Вже на карті</option>
+                                        <option value="all">Усі пристрої</option>
+                                    </select>
+                                    <div id="inventoryList" class="d-flex flex-column gap-2"
+                                        style="max-height: 40vh; overflow-y: auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border-0 border-bottom">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed px-3 py-3"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#panelCatalog"><i
+                                        class="fa-solid fa-plus-circle me-2 text-success"></i>Створити</button></h2>
+                            <div id="panelCatalog" class="accordion-collapse collapse"
+                                data-bs-parent="#sidebarAccordion">
+                                <div class="accordion-body text-center px-2 py-2">
+                                    <div id="toolbar-tools" class="d-grid gap-2 mb-2"></div>
+                                    <button id="cancelSelectionBtn" class="btn btn-sm btn-outline-danger w-100 d-none"
+                                        onclick="cancelSelection()">Скасувати</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border-0 border-bottom">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed px-3 py-3"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#panelInterior"><i
+                                        class="fa-solid fa-pen-ruler me-2 text-secondary"></i>Інтер'єр</button></h2>
+                            <div id="panelInterior" class="accordion-collapse collapse"
+                                data-bs-parent="#sidebarAccordion">
+                                <div class="accordion-body text-center px-2 py-2">
+                                    <button class="btn btn-outline-secondary w-100 fw-bold mb-2 shadow-sm"
+                                        onclick="addDesk()"><i class="fa-solid fa-square-plus me-2"></i>Додати
+                                        стіл</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 border-top bg-light">
+                    <label class="form-label small fw-bold text-muted mb-1 w-100 text-center">Масштаб</label>
+                    <div class="btn-group shadow-sm w-100">
+                        <button class="btn btn-light border" id="btn-zoom-out"><i
+                                class="fa-solid fa-minus"></i></button>
+                        <button class="btn btn-light border fw-bold" id="btn-zoom-reset"
+                            style="width: 60px;">100%</button>
+                        <button class="btn btn-light border" id="btn-zoom-in"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 position-relative p-0 bg-light" style="height: calc(100vh - 62px);">
+                <div id="map-viewport"
+                    style="overflow: hidden; width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: grab;">
+                    <div id="map-canvas"
+                        style="width: 10000px; height: 10000px; position: absolute; top: 0; left: 0; transform-origin: 0 0;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 border-start bg-white d-flex flex-column shadow-sm z-2"
+                style="height: calc(100vh - 62px);">
+                <div
+                    class="bg-danger bg-opacity-10 text-danger p-3 fw-bold text-center border-bottom border-danger border-opacity-25">
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i> Активні інциденти
+                </div>
+                <div class="flex-grow-1 overflow-y-auto p-2" id="ticketsRightPanel">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Додати обладнання</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deviceForm">
+                        <input type="hidden" id="form_id">
+                        <input type="hidden" id="form_type_id">
+                        <input type="hidden" id="form_pos_x">
+                        <input type="hidden" id="form_pos_y">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Назва (Hostname)</label>
+                            <input type="text" class="form-control" id="form_hostname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">IP-адреса</label>
+                            <input type="text" class="form-control" id="form_ip">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">MAC-адреса</label>
+                            <input type="text" class="form-control" id="form_mac">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Відділ</label>
+                            <select class="form-select" id="form_department">
+                                <option value="Загальний">Загальний</option>
+                                <option value="Чехи">Чехи</option>
+                                <option value="Німці">Німці</option>
+                                <option value="Поляки">Поляки</option>
+                                <option value="Адміністрація">Адміністрація</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold" id="submitBtn">Зберегти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" id="deviceDetailsPanel">
+        <div class="offcanvas-header bg-dark text-white">
+            <h5 class="offcanvas-title fw-bold">Деталі пристрою</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="text-center mb-4">
+                <div class="display-3 text-secondary" id="detail-icon"></div>
+                <h3 class="fw-bold" id="detail-hostname"></h3>
+                <span class="badge" id="detail-status-badge"></span>
+            </div>
+            <ul class="list-group mb-4 shadow-sm">
+                <li class="list-group-item d-flex justify-content-between"><span>IP:</span> <strong
+                        id="detail-ip"></strong></li>
+                <li class="list-group-item d-flex justify-content-between"><span>MAC:</span> <strong
+                        id="detail-mac"></strong></li>
+                <li class="list-group-item d-flex justify-content-between"><span>Відділ:</span> <strong
+                        id="detail-department"></strong></li>
+            </ul>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-lg" id="btn-create-ticket"><i
+                        class="fa-solid fa-ticket-simple me-2"></i>Створити тікет</button>
+                <button class="btn btn-outline-warning" id="btn-edit-device"><i
+                        class="fa-solid fa-pen me-2"></i>Редагувати</button>
+                <button class="btn btn-outline-danger" id="btn-delete-device"><i
+                        class="fa-solid fa-trash me-2"></i>Видалити</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Новий інцидент
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="ticketForm">
+                        <input type="hidden" id="ticket_device_id">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Тема проблеми</label>
+                            <input type="text" class="form-control" id="ticket_subject" required
+                                placeholder="Напр., Впав сервер баз даних">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Опис (Деталі)</label>
+                            <textarea class="form-control" id="ticket_description" rows="3" required
+                                placeholder="Опишіть симптоми..."></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Пріоритет</label>
+                            <select class="form-select" id="ticket_priority">
+                                <option value="low">Низький</option>
+                                <option value="medium" selected>Середній</option>
+                                <option value="high">Високий</option>
+                                <option value="critical">Критичний</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold">Відкрити тікет</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 2000;">
+        <div id="systemToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-bold text-white px-3" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+
+</html>

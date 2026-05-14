@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстр обладнання - IT Infra PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="index.html"><i class="fa-solid fa-server me-2 text-primary"></i>IT
+                Infra PRO</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i
+                                class="fa-solid fa-map-location-dot me-1"></i> Топологія</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="devices.html"><i
+                                class="fa-solid fa-desktop me-1"></i> Обладнання</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i
+                                class="fa-solid fa-ticket-simple me-1"></i> Система Тікетів</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold mb-0"><i class="fa-solid fa-list-ul me-2 text-primary"></i>Реєстр обладнання</h2>
+            <button class="btn btn-primary fw-bold" onclick="openDeviceModal()"><i
+                    class="fa-solid fa-plus me-2"></i>Додати пристрій</button>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i
+                            class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-start-0"
+                        placeholder="Пошук за назвою, IP, MAC або відділом..." onkeyup="renderDevicesTable()">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select shadow-sm" id="statusFilter" onchange="renderDevicesTable()">
+                    <option value="all">Усі статуси</option>
+                    <option value="ok">Працює (OK)</option>
+                    <option value="warning">Увага</option>
+                    <option value="error">Тікет (Помилка)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Тип</th>
+                                <th>Назва (Hostname)</th>
+                                <th>IP Адреса</th>
+                                <th>MAC Адреса</th>
+                                <th>Відділ</th>
+                                <th>Статус</th>
+                                <th class="text-end">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devices-table-body">
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted"><i
+                                        class="fa-solid fa-spinner fa-spin me-2"></i>Завантаження...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deviceListModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="deviceModalTitle">Додати обладнання</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deviceListForm">
+                        <input type="hidden" id="form_id">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Тип пристрою</label>
+                            <select class="form-select" id="form_type_id" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Назва (Hostname)</label>
+                            <input type="text" class="form-control" id="form_hostname" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-bold">IP Адреса</label>
+                                <input type="text" class="form-control" id="form_ip">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold">MAC Адреса</label>
+                                <input type="text" class="form-control" id="form_mac">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Відділ / Кабінет</label>
+                            <select class="form-select" id="form_department_id">
+                                <option value="">-- Без відділу --</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Зберегти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/devices.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+body {
+    background-color: #f8f9fa;
+}
+
+/* Зона карти (Полотно) */
+#map-container {
+    width: 2500px;
+    /* Величезне полотно для будь-яких планів */
+    height: 1800px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    position: relative;
+    /* Сітка */
+    background-image: linear-gradient(rgba(13, 110, 253, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(13, 110, 253, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+
+    /* Налаштування для ЗУМУ */
+    transform-origin: top left;
+    transition: transform 0.15s ease-out;
+    /* Плавне наближення */
+}
+
+#map-container.add-mode {
+    cursor: crosshair;
+}
+
+/* Вузол пристрою (змінено курсор на grab для перетягування) */
+.device-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    text-align: center;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.device-node:active {
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+.device-node:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: 100;
+}
+
+/* Іконка */
+.device-icon {
+    font-size: 22px;
+    color: #495057;
+    background: white;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid #fff;
+}
+
+/* Статуси */
+.status-ok .device-icon {
+    border-color: #198754;
+    color: #198754;
+}
+
+.status-warning .device-icon {
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.status-error .device-icon {
+    border-color: #dc3545;
+    color: #dc3545;
+    box-shadow: 0 0 12px rgba(220, 53, 69, 0.6);
+}
+
+/* Підпис пристрою */
+.device-label {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none;
+    pointer-events: none;
+}
+
+.device-node:hover .device-label {
+    display: block;
+}
+
+/* Виділений пристрій (Multi-select) */
+.device-node.selected .device-icon {
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.6);
+    border-color: #0d6efd;
+}
+
+/* Рамка масового виділення (Lasso) */
+#selection-box {
+    position: absolute;
+    border: 1px solid #0d6efd;
+    background-color: rgba(13, 110, 253, 0.2);
+    z-index: 9999;
+    display: none;
+    pointer-events: none; /* Щоб рамка не перекривала кліки по ПК */
+}
+
+/* --- СТИЛІ ДЛЯ ТАБЛИЦЬ (Реєстр) --- */
+.editable-cell { 
+    cursor: text; 
+    border-bottom: 1px dashed transparent; 
+    transition: 0.2s; 
+}
+.editable-cell:hover { 
+    background-color: #e9ecef; 
+    border-bottom: 1px dashed #0d6efd; 
+}
+
+#map-canvas {
+    background-image: 
+        linear-gradient(to right, #d1d5db 1px, transparent 1px),
+        linear-gradient(to bottom, #d1d5db 1px, transparent 1px);
+    background-size: 20px 20px; /* Базовий розмір клітинки */
+}
+
+/* Ідеальна інженерна сітка для полотна */
+#map-canvas {
+    background-image: 
+        linear-gradient(to right, #d1d5db 1px, transparent 1px),
+        linear-gradient(to bottom, #d1d5db 1px, transparent 1px);
+    background-size: 20px 20px; 
+    transition: transform 0.1s ease-out; /* Плавність при зумі */
+}
+
+/* --- СТОЛИ --- */
+.desk-node {
+    position: absolute;
+    background-color: #f1f5f9; /* Світло-сірий колір стола */
+    border: 2px dashed #94a3b8; /* Пунктирна рамка */
+    border-radius: 6px;
+    z-index: 5; /* Важливо: менше ніж у ПК (10), щоб ПК лежали зверху */
+    resize: both; /* Дозволяє розтягувати об'єкт мишкою! */
+    overflow: hidden; 
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+    font-weight: bold;
+    font-size: 1.2rem;
+    user-select: none;
+}
+.desk-node:active {
+    cursor: grabbing;
+}
+/* Переконайся, що ПК лежать вище столів */
+.device-node {
+    z-index: 10; 
+}
+
+
+/* Універсальне виділення для всіх об'єктів (ПК та Столів) */
+.selectable-item.selected {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+}
+
+/* Прибираємо старий бордер виділення для ПК, бо тепер є універсальний outline */
+.device-node.selected { border-color: transparent; }
+
+/* Дизайн лівої панелі (draw.io style) */
+.sidebar-accordion .accordion-button {
+    font-weight: bold;
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+}
+.sidebar-accordion .accordion-button:not(.collapsed) {
+    background-color: #e9ecef;
+    color: #212529;
+    box-shadow: none;
+}
+.sidebar-accordion .accordion-body {
+    padding: 0.75rem;
+    background-color: #ffffff;
+}
+
+/* Компактний інпут для швидкого редагування */
+.inline-edit-input {
+    height: auto !important;
+    padding: 0px 4px !important;
+    margin: -2px -5px !important; /* Компенсуємо рамку, щоб не розсувало контент */
+    font-size: inherit !important;
+    line-height: inherit !important;
+    border-radius: 4px;
+    border: 2px solid #0d6efd !important;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.3) !important;
+}
+
+/* Пульсація при пошуку комп'ютера через тікет */
+.pulse-highlight {
+    animation: pulse-red 1.5s infinite;
+    z-index: 100 !important;
+}
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.8); }
+    70% { box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Колір пристроїв зі статусом error (зламані) */
+.device-node.status-error {
+    color: #dc3545 !important; /* Червоний колір іконки */
+}
