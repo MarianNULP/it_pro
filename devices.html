@@ -19,6 +19,10 @@
                 Infra PRO</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
+                    <button class="btn btn-outline-light ms-2 shadow-sm fw-bold" data-bs-toggle="offcanvas"
+                        data-bs-target="#settingsPanel">
+                        <i class="fa-solid fa-gear me-1"></i> Налаштування
+                    </button>
                     <li class="nav-item"><a class="nav-link" href="index.html"><i
                                 class="fa-solid fa-map-location-dot me-1"></i> Топологія</a></li>
                     <li class="nav-item"><a class="nav-link active" href="devices.html"><i
@@ -43,11 +47,11 @@
                     <span class="input-group-text bg-white border-end-0"><i
                             class="fa-solid fa-magnifying-glass text-muted"></i></span>
                     <input type="text" id="searchInput" class="form-control border-start-0"
-                        placeholder="Пошук за назвою, IP, MAC або відділом..." onkeyup="renderDevicesTable()">
+                        placeholder="Пошук за назвою, IP, MAC або відділом...">
                 </div>
             </div>
             <div class="col-md-3">
-                <select class="form-select shadow-sm" id="statusFilter" onchange="renderDevicesTable()">
+                <select class="form-select shadow-sm" id="statusFilter">
                     <option value="all">Усі статуси</option>
                     <option value="ok">Працює (OK)</option>
                     <option value="warning">Увага</option>

@@ -24,6 +24,10 @@
                 PRO</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
+                    <button class="btn btn-outline-light ms-2 shadow-sm fw-bold" data-bs-toggle="offcanvas"
+                        data-bs-target="#settingsPanel">
+                        <i class="fa-solid fa-gear me-1"></i> Налаштування
+                    </button>
                     <li class="nav-item"><a class="nav-link" href="index.html"><i
                                 class="fa-solid fa-map-location-dot me-1"></i> Топологія</a></li>
                     <li class="nav-item"><a class="nav-link" href="devices.html"><i
@@ -43,29 +47,31 @@
         </div>
 
         <div class="row mb-3">
-        <div class="col-md-5">
-            <div class="input-group shadow-sm">
-                <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                <input type="text" id="searchTicketInput" class="form-control border-start-0" placeholder="Пошук за комп'ютером, темою або описом..." onkeyup="renderTicketsTable()">
+            <div class="col-md-5">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i
+                            class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="searchTicketInput" class="form-control border-start-0"
+                        placeholder="Пошук за комп'ютером, темою або описом...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select shadow-sm" id="statusTicketFilter">
+                    <option value="all">Усі статуси</option>
+                    <option value="new">Нове</option>
+                    <option value="in_progress">В роботі</option>
+                    <option value="unresolved">Немає рішення</option>
+                    <option value="completed">Виконано</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select shadow-sm" id="sortTicketFilter">
+                    <option value="date_desc">Сортувати: Спочатку нові</option>
+                    <option value="date_asc">Сортувати: Спочатку старі</option>
+                    <option value="priority_desc">Сортувати: Критичні пріоритети</option>
+                </select>
             </div>
         </div>
-        <div class="col-md-3">
-            <select class="form-select shadow-sm" id="statusTicketFilter" onchange="renderTicketsTable()">
-                <option value="all">Усі статуси</option>
-                <option value="new">Нове</option>
-                <option value="in_progress">В роботі</option>
-                <option value="unresolved">Немає рішення</option>
-                <option value="completed">Виконано</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <select class="form-select shadow-sm" id="sortTicketFilter" onchange="renderTicketsTable()">
-                <option value="date_desc">Сортувати: Спочатку нові</option>
-                <option value="date_asc">Сортувати: Спочатку старі</option>
-                <option value="priority_desc">Сортувати: Критичні пріоритети</option>
-            </select>
-        </div>
-    </div>
 
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">

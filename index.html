@@ -23,15 +23,30 @@
                 <select class="form-select form-select-sm fw-bold border-0 shadow-none bg-transparent text-white"
                     id="locationSelect" onchange="changeLocation()" style="min-width: 150px; cursor: pointer;"></select>
             </div>
-            
+
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
+
                     <li class="nav-item"><a class="nav-link active" href="index.html"><i
                                 class="fa-solid fa-map-location-dot me-1"></i> Топологія</a></li>
                     <li class="nav-item"><a class="nav-link" href="devices.html"><i
                                 class="fa-solid fa-desktop me-1"></i> Обладнання</a></li>
-                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i
-                                class="fa-solid fa-ticket-simple me-1"></i> Система Тікетів</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="dashboard.html">
+                            <i class="fa-solid fa-ticket-simple me-1"></i> Система Тікетів
+                            <span
+                                class="position-absolute top-10 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                <span class="visually-hidden">Нові інциденти</span>
+                            </span>
+                        </a>
+                    </li>
+                    <button class="btn btn-outline-info ms-2 shadow-sm fw-bold" onclick="showAnalytics()">
+                        <i class="fa-solid fa-chart-pie me-1"></i> Статистика
+                    </button>
+                    <button class="btn btn-outline-light ms-2 shadow-sm fw-bold" data-bs-toggle="offcanvas"
+                        data-bs-target="#settingsPanel">
+                        <i class="fa-solid fa-gear me-1"></i> Налаштування
+                    </button>
                 </ul>
             </div>
         </div>
@@ -57,9 +72,9 @@
                                         onkeyup="renderInventory()">
                                     <select class="form-select form-select-sm mb-3 shadow-none" id="invFilter"
                                         onchange="renderInventory()">
+                                        <option value="all">Усі пристрої</option>
                                         <option value="unplaced">🔵 Не розміщені</option>
                                         <option value="placed">🟢 Вже на карті</option>
-                                        <option value="all">Усі пристрої</option>
                                     </select>
                                     <div id="inventoryList" class="d-flex flex-column gap-2"
                                         style="max-height: 40vh; overflow-y: auto;"></div>
@@ -93,6 +108,42 @@
                                         стіл</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 border-top bg-white">
+                    <label class="form-label small fw-bold text-muted mb-3 w-100 uppercase"><i
+                            class="fa-solid fa-server me-2"></i>Статус сервера</label>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span class="text-secondary">CPU</span>
+                            <span class="text-success">24%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                role="progressbar" style="width: 24%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span class="text-secondary">RAM (4.2 / 16 GB)</span>
+                            <span class="text-warning">42%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 42%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span class="text-secondary">Мережа (Ping)</span>
+                            <span class="text-primary">12 ms</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 15%"></div>
                         </div>
                     </div>
                 </div>
@@ -162,11 +213,7 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold">Відділ</label>
                             <select class="form-select" id="form_department">
-                                <option value="Загальний">Загальний</option>
-                                <option value="Чехи">Чехи</option>
-                                <option value="Німці">Німці</option>
-                                <option value="Поляки">Поляки</option>
-                                <option value="Адміністрація">Адміністрація</option>
+                                <option value="">-- Без відділу --</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-success w-100 fw-bold" id="submitBtn">Зберегти</button>
@@ -256,7 +303,78 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <div class="offcanvas offcanvas-start" id="settingsPanel" tabindex="-1">
+        <div class="offcanvas-header bg-dark text-white">
+            <h5 class="offcanvas-title fw-bold"><i class="fa-solid fa-sliders me-2"></i>Глобальні налаштування</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="mb-4">
+                <label class="form-label fw-bold text-muted small uppercase">Візуалізація</label>
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="setting-show-labels" checked>
+                    <label class="form-check-label" for="setting-show-labels">Показувати назви (Hostname)</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="setting-grid-snap" checked>
+                    <label class="form-check-label" for="setting-grid-snap">Прив'язка до сітки</label>
+                </div>
+            </div>
 
+            <div class="mb-4">
+                <label class="form-label fw-bold text-muted small uppercase">Параметри сітки</label>
+                <div class="d-flex align-items-center gap-3">
+                    <input type="range" class="form-range" id="setting-grid-size" min="10" max="50" step="5" value="20">
+                    <span class="badge bg-primary" id="grid-size-value">20px</span>
+                </div>
+            </div>
+
+            <div class="mb-4 border-top pt-3">
+                <label class="form-label fw-bold text-muted small uppercase">Інтерфейс</label>
+                <button class="btn btn-outline-dark w-100 mb-2" id="btn-toggle-theme">
+                    <i class="fa-solid fa-moon me-2"></i> Темна тема (Бета)
+                </button>
+            </div>
+
+            <div class="mt-auto p-3 bg-light rounded text-center">
+                <small class="text-muted">Версія системи: PRO v2.1.0<br>Лабораторна робота №1</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="modal fade" id="analyticsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-info text-dark border-0">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-chart-line me-2"></i>Статистика інфраструктури
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded border shadow-sm">
+                                <h2 class="fw-bold text-primary mb-0" id="stat-total-devices">0</h2>
+                                <small class="text-muted fw-bold text-uppercase">Всього пристроїв</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded border shadow-sm">
+                                <h2 class="fw-bold text-danger mb-0" id="stat-total-tickets">0</h2>
+                                <small class="text-muted fw-bold text-uppercase">Проблемних (Тікети)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold text-muted mb-3 uppercase">Стан обладнання (Кільцевий графік)</h6>
+                    <div class="d-flex justify-content-center">
+                        <canvas id="devicesChart" style="max-height: 250px; max-width: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
